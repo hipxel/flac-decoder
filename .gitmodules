@@ -1,0 +1,3 @@
+[submodule "src/main/cpp/thirdparty/flac"]
+	path = src/main/cpp/thirdparty/flac
+	url = https://github.com/hipxel/flac.git

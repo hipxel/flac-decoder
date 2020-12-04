@@ -1,0 +1,17 @@
+*.iml
+
+.cxx
+.externalNativeBuild
+.gradle
+.navigation
+
+.idea/assetWizardSettings.xml
+.idea/caches
+.idea/libraries
+.idea/modules.xml
+.idea/navEditor.xml
+.idea/workspace.xml
+
+/build
+/captures
+/local.properties
