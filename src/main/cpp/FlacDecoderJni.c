@@ -24,28 +24,13 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
 	return JNI_VERSION_1_6;
 }
 
-typedef struct {
-	hipxel_FlacDecoder *decoder;
-} hipxel_FlacDecoderJni;
-
-static hipxel_FlacDecoderJni *hipxel_FlacDecoderJni_new(hipxel_DataReader dataReader) {
-	hipxel_FlacDecoderJni *fdj = malloc(sizeof(hipxel_FlacDecoderJni));
-	fdj->decoder = hipxel_FlacDecoder_new(dataReader);
-	return fdj;
-}
-
-static void hipxel_FlacDecoderJni_delete(hipxel_FlacDecoderJni *fdj) {
-	hipxel_FlacDecoder_delete(fdj->decoder);
-	free(fdj);
-}
-
 JNIEXPORT jobject JNICALL
 Java_com_hipxel_flac_FlacDecoder_create(JNIEnv *env, jobject thiz, jobject dataReader) {
 	hipxel_DataReader jdr = hipxel_JavaDataReader_create(env, dataReader);
-	hipxel_FlacDecoderJni *ptr = hipxel_FlacDecoderJni_new(jdr);
+	hipxel_FlacDecoder *ptr = hipxel_FlacDecoder_new(jdr);
 
-	if (!ptr->decoder->initialized) {
-		hipxel_FlacDecoderJni_delete(ptr);
+	if (!ptr->initialized) {
+		hipxel_FlacDecoder_delete(ptr);
 		return NULL;
 	}
 
@@ -54,62 +39,62 @@ Java_com_hipxel_flac_FlacDecoder_create(JNIEnv *env, jobject thiz, jobject dataR
 
 JNIEXPORT void JNICALL
 Java_com_hipxel_flac_FlacDecoder_release(JNIEnv *env, jobject thiz, jobject pointer) {
-	hipxel_FlacDecoderJni *ptr = (*env)->GetDirectBufferAddress(env, pointer);
-	hipxel_FlacDecoderJni_delete(ptr);
+	hipxel_FlacDecoder *ptr = (*env)->GetDirectBufferAddress(env, pointer);
+	hipxel_FlacDecoder_delete(ptr);
 }
 
 JNIEXPORT jboolean JNICALL
 Java_com_hipxel_flac_FlacDecoder_step(JNIEnv *env, jobject thiz, jobject pointer) {
-	hipxel_FlacDecoderJni *ptr = (*env)->GetDirectBufferAddress(env, pointer);
-	return (jboolean) hipxel_FlacDecoder_step(ptr->decoder);
+	hipxel_FlacDecoder *ptr = (*env)->GetDirectBufferAddress(env, pointer);
+	return (jboolean) hipxel_FlacDecoder_step(ptr);
 }
 
 JNIEXPORT jlong JNICALL
 Java_com_hipxel_flac_FlacDecoder_read(JNIEnv *env, jobject thiz,
                                       jobject pointer, jbyteArray buffer, jlong length) {
-	hipxel_FlacDecoderJni *ptr = (*env)->GetDirectBufferAddress(env, pointer);
-	return (hipxel_FlacDecoder_readJni(ptr->decoder, env, buffer, length));
+	hipxel_FlacDecoder *ptr = (*env)->GetDirectBufferAddress(env, pointer);
+	return (hipxel_FlacDecoder_readJni(ptr, env, buffer, length));
 }
 
 JNIEXPORT void JNICALL
 Java_com_hipxel_flac_FlacDecoder_seekTo(JNIEnv *env, jobject thiz,
                                         jobject pointer, jlong position) {
-	hipxel_FlacDecoderJni *ptr = (*env)->GetDirectBufferAddress(env, pointer);
-	hipxel_FlacDecoder_seekTo(ptr->decoder, position);
+	hipxel_FlacDecoder *ptr = (*env)->GetDirectBufferAddress(env, pointer);
+	hipxel_FlacDecoder_seekTo(ptr, position);
 }
 
 JNIEXPORT jint JNICALL
 Java_com_hipxel_flac_FlacDecoder_getSampleRate(JNIEnv *env, jobject thiz, jobject pointer) {
-	hipxel_FlacDecoderJni *ptr = (*env)->GetDirectBufferAddress(env, pointer);
-	return hipxel_FlacDecoder_getSampleRate(ptr->decoder);
+	hipxel_FlacDecoder *ptr = (*env)->GetDirectBufferAddress(env, pointer);
+	return hipxel_FlacDecoder_getSampleRate(ptr);
 }
 
 JNIEXPORT jint JNICALL
 Java_com_hipxel_flac_FlacDecoder_getChannelsCount(JNIEnv *env, jobject thiz, jobject pointer) {
-	hipxel_FlacDecoderJni *ptr = (*env)->GetDirectBufferAddress(env, pointer);
-	return hipxel_FlacDecoder_getChannelsCount(ptr->decoder);
+	hipxel_FlacDecoder *ptr = (*env)->GetDirectBufferAddress(env, pointer);
+	return hipxel_FlacDecoder_getChannelsCount(ptr);
 }
 
 JNIEXPORT jint JNICALL
 Java_com_hipxel_flac_FlacDecoder_getBitsPerSample(JNIEnv *env, jobject thiz, jobject pointer) {
-	hipxel_FlacDecoderJni *ptr = (*env)->GetDirectBufferAddress(env, pointer);
-	return hipxel_FlacDecoder_getBitsPerSample(ptr->decoder);
+	hipxel_FlacDecoder *ptr = (*env)->GetDirectBufferAddress(env, pointer);
+	return hipxel_FlacDecoder_getBitsPerSample(ptr);
 }
 
 JNIEXPORT jlong JNICALL
 Java_com_hipxel_flac_FlacDecoder_getTotalSamplesCount(JNIEnv *env, jobject thiz, jobject pointer) {
-	hipxel_FlacDecoderJni *ptr = (*env)->GetDirectBufferAddress(env, pointer);
-	return hipxel_FlacDecoder_getTotalSamplesCount(ptr->decoder);
+	hipxel_FlacDecoder *ptr = (*env)->GetDirectBufferAddress(env, pointer);
+	return hipxel_FlacDecoder_getTotalSamplesCount(ptr);
 }
 
 JNIEXPORT jlong JNICALL
 Java_com_hipxel_flac_FlacDecoder_getPcmFramesPosition(JNIEnv *env, jobject thiz, jobject pointer) {
-	hipxel_FlacDecoderJni *ptr = (*env)->GetDirectBufferAddress(env, pointer);
-	return hipxel_FlacDecoder_getPcmFramesPosition(ptr->decoder);
+	hipxel_FlacDecoder *ptr = (*env)->GetDirectBufferAddress(env, pointer);
+	return hipxel_FlacDecoder_getPcmFramesPosition(ptr);
 }
 
 JNIEXPORT jlong JNICALL
 Java_com_hipxel_flac_FlacDecoder_getBytesReadyCount(JNIEnv *env, jobject thiz, jobject pointer) {
-	hipxel_FlacDecoderJni *ptr = (*env)->GetDirectBufferAddress(env, pointer);
-	return hipxel_FlacDecoder_getBytesReadyCount(ptr->decoder);
+	hipxel_FlacDecoder *ptr = (*env)->GetDirectBufferAddress(env, pointer);
+	return hipxel_FlacDecoder_getBytesReadyCount(ptr);
 }
