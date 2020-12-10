@@ -18,18 +18,18 @@ cmake_minimum_required(VERSION 3.4.1)
 
 add_subdirectory(thirdparty)
 
-add_library(flacdecoder SHARED
+add_library(HipxelFlacDecoder SHARED
 	FlacDecoder.c
 	FlacDecoderJni.c
 	GrowingBuffer.c
 	JavaDataReader.c
 	)
 
-set_property(TARGET flacdecoder PROPERTY C_STANDARD 99)
+set_property(TARGET HipxelFlacDecoder PROPERTY C_STANDARD 99)
 
-target_link_libraries(flacdecoder
+target_link_libraries(HipxelFlacDecoder PRIVATE
 	FLAC
 	log
 	)
 
-target_compile_options(flacdecoder PRIVATE -fvisibility=hidden)
+target_compile_options(HipxelFlacDecoder PRIVATE -fvisibility=hidden)

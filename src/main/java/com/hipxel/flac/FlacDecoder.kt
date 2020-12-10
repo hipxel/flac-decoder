@@ -92,7 +92,7 @@ class FlacDecoder(dataReader: DataReader) {
 	private object Loader {
 		private val loaded by lazy {
 			try {
-				System.loadLibrary("flacdecoder")
+				System.loadLibrary("HipxelFlacDecoder")
 				true
 			} catch (t: Throwable) {
 				t.printStackTrace()
