@@ -21,6 +21,8 @@
 
 #include <stdbool.h>
 
+#include <jni.h>
+
 struct hipxel_GrowingBuffer;
 
 typedef struct hipxel_FlacDecoder {
@@ -55,7 +57,8 @@ void hipxel_FlacDecoder_delete(hipxel_FlacDecoder *fd);
 
 bool hipxel_FlacDecoder_step(hipxel_FlacDecoder *fd);
 
-int64_t hipxel_FlacDecoder_read(hipxel_FlacDecoder *fd, void *buffer, int64_t length);
+jlong hipxel_FlacDecoder_readJni(hipxel_FlacDecoder *fd,
+		JNIEnv *env, jbyteArray buffer, jlong length);
 
 void hipxel_FlacDecoder_seekTo(hipxel_FlacDecoder *fd, int64_t position);
 

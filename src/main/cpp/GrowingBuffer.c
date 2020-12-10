@@ -60,12 +60,13 @@ void *hipxel_GrowingBuffer_claimForWrite(hipxel_GrowingBuffer *gb, int64_t lengt
 	return p;
 }
 
-int64_t hipxel_GrowingBuffer_consume(hipxel_GrowingBuffer *gb, void *buffer, int64_t length) {
+jlong hipxel_GrowingBuffer_consumeJni(hipxel_GrowingBuffer *gb,
+                                        JNIEnv *env, jbyteArray buffer, jlong length) {
 	if (gb->dataCapacity <= 0 || gb->dataLength <= 0)
 		return 0;
 
-	int64_t tlen = length < gb->dataLength ? length : gb->dataLength;
-	memcpy(buffer, gb->data, tlen);
+	jsize tlen = (jsize) (length < gb->dataLength ? length : gb->dataLength);
+	(*env)->SetByteArrayRegion(env, buffer, 0, tlen, (jbyte *) gb->data);
 
 	hipxel_GrowingBuffer_discard(gb, tlen);
 

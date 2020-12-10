@@ -273,8 +273,9 @@ bool hipxel_FlacDecoder_step(hipxel_FlacDecoder *fd) {
 	return !fd->finished;
 }
 
-int64_t hipxel_FlacDecoder_read(hipxel_FlacDecoder *fd, void *buffer, int64_t length) {
-	int64_t red = hipxel_GrowingBuffer_consume(fd->growingBuffer, buffer, length);
+jlong hipxel_FlacDecoder_readJni(hipxel_FlacDecoder *fd,
+		JNIEnv *env, jbyteArray buffer, jlong length) {
+	jlong red = hipxel_GrowingBuffer_consumeJni(fd->growingBuffer, env, buffer, length);
 
 	if (red < 0)
 		return red;

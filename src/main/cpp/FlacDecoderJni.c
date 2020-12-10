@@ -25,37 +25,18 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
 }
 
 typedef struct {
-	size_t bufferLength;
-	jbyte *buffer;
 	hipxel_FlacDecoder *decoder;
 } hipxel_FlacDecoderJni;
 
 static hipxel_FlacDecoderJni *hipxel_FlacDecoderJni_new(hipxel_DataReader dataReader) {
 	hipxel_FlacDecoderJni *fdj = malloc(sizeof(hipxel_FlacDecoderJni));
-	fdj->bufferLength = 0;
-	fdj->buffer = NULL;
 	fdj->decoder = hipxel_FlacDecoder_new(dataReader);
 	return fdj;
 }
 
 static void hipxel_FlacDecoderJni_delete(hipxel_FlacDecoderJni *fdj) {
 	hipxel_FlacDecoder_delete(fdj->decoder);
-	free(fdj->buffer);
 	free(fdj);
-}
-
-static jbyte *hipxel_FlacDecoderJni_prepareTemporaryBuffer(
-		hipxel_FlacDecoderJni *fdj, size_t length) {
-	if (length <= fdj->bufferLength)
-		return fdj->buffer;
-
-	jbyte *p = realloc(fdj->buffer, length * sizeof(jbyte));
-	if (NULL == p)
-		return NULL;
-
-	fdj->buffer = p;
-	fdj->bufferLength = length;
-	return fdj->buffer;
 }
 
 JNIEXPORT jobject JNICALL
@@ -87,19 +68,7 @@ JNIEXPORT jlong JNICALL
 Java_com_hipxel_flac_FlacDecoder_read(JNIEnv *env, jobject thiz,
                                       jobject pointer, jbyteArray buffer, jlong length) {
 	hipxel_FlacDecoderJni *ptr = (*env)->GetDirectBufferAddress(env, pointer);
-
-	jbyte *tmpBuffer = hipxel_FlacDecoderJni_prepareTemporaryBuffer(ptr, (size_t) length);
-	if (NULL == tmpBuffer)
-		return -1;
-
-	jlong ret = (jlong) (hipxel_FlacDecoder_read(ptr->decoder, tmpBuffer, length));
-
-	if (ret <= 0)
-		return ret;
-
-	(*env)->SetByteArrayRegion(env, buffer, 0, (jsize) (ret), tmpBuffer);
-
-	return ret;
+	return (hipxel_FlacDecoder_readJni(ptr->decoder, env, buffer, length));
 }
 
 JNIEXPORT void JNICALL

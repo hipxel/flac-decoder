@@ -18,6 +18,7 @@
 #define HIPXEL_GROWINGBUFFER
 
 #include <stdint.h>
+#include <jni.h>
 
 typedef struct hipxel_GrowingBuffer {
 	uint8_t *data;
@@ -31,7 +32,8 @@ void hipxel_GrowingBuffer_delete(hipxel_GrowingBuffer *gb);
 
 void *hipxel_GrowingBuffer_claimForWrite(hipxel_GrowingBuffer *gb, int64_t length);
 
-int64_t hipxel_GrowingBuffer_consume(hipxel_GrowingBuffer *gb, void *buffer, int64_t length);
+jlong hipxel_GrowingBuffer_consumeJni(hipxel_GrowingBuffer *gb,
+		JNIEnv *env, jbyteArray buffer, jlong length);
 
 int64_t hipxel_GrowingBuffer_discard(hipxel_GrowingBuffer *gb, int64_t length);
 
